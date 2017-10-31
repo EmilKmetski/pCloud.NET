@@ -109,6 +109,15 @@ namespace pCloud.NET
 			var json = this.Deserialize(await response.Content.ReadAsStringAsync());
             return json.metadata[0].ToObject<File>();
         }
+	
+	public async Task GetFolderZipAsync(long folderId, Stream stream, CancellationToken cancellationToken)
+        {
+            var requestUri = this.BuildRequestUri("getzip", new { folderid = folderId });
+            
+            HttpResponseMessage response = await this.httpClient.GetAsync(requestUri, HttpCompletionOption.ResponseHeadersRead);
+            var responseStream = await response.Content.ReadAsStreamAsync();   
+            await responseStream.CopyToAsync(stream);
+        }
 
         public async Task DownloadFileAsync(long fileId, Stream stream, CancellationToken cancellationToken)
         {
